@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Explorer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #000010;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #00d4ff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav ul a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav ul a:hover { color: #00d4ff; }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .hero-tag {
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            color: #a855f7;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(180deg, #ffffff 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.5);
+            max-width: 500px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4ff, #a855f7);
+            color: white;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.7);
+        }
+
+        .planets {
+            padding: 100px 60px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d4ff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-sub {
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 60px;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 240px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 20px 60px rgba(168, 85, 247, 0.15);
+        }
+
+        .planet-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.7;
+        }
+
+        .stats {
+            padding: 80px 60px;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            flex-wrap: wrap;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #00d4ff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat p {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="stars"></canvas>
+    <div class="content">
+        <nav>
+            <div class="logo">✦ COSMOS</div>
+            <ul>
+                <li><a href="#">Explore</a></li>
+                <li><a href="#">Missions</a></li>
+                <li><a href="#">Observatory</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-tag">✦ Welcome to the universe</div>
+            <h1>Beyond The<br>Known Stars</h1>
+            <p>Embark on an interstellar journey through the cosmos. Discover the mysteries of deep space, ancient galaxies, and the fabric of the universe.</p>
+            <button class="btn btn-primary">Begin Exploration</button>
+        </section>
+
+        <section class="planets">
+            <h2 class="section-title">Destinations</h2>
+            <p class="section-sub">CHOOSE YOUR NEXT MISSION</p>
+            <div class="cards">
+                <div class="card">
+                    <span class="planet-emoji">🔴</span>
+                    <h3>Mars Colony</h3>
+                    <p>The red frontier awaits. Join the first generation of interplanetary settlers.</p>
+                </div>
+                <div class="card">
+                    <span class="planet-emoji">🪐</span>
+                    <h3>Saturn's Rings</h3>
+                    <p>Float through the iconic rings of the solar system's most majestic giant.</p>
+                </div>
+                <div class="card">
+                    <span class="planet-emoji">🌌</span>
+                    <h3>Deep Space</h3>
+                    <p>Venture beyond the heliosphere into the vast interstellar medium.</p>
+                </div>
+                <div class="card">
+                    <span class="planet-emoji">🌙</span>
+                    <h3>Lunar Base</h3>
+                    <p>Earth's faithful companion, now humanity's first permanent off-world home.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat">
+                <h2>2,000+</h2>
+                <p>Exoplanets Mapped</p>
+            </div>
+            <div class="stat">
+                <h2>13.8B</h2>
+                <p>Years of History</p>
+            </div>
+            <div class="stat">
+                <h2>400B</h2>
+                <p>Stars in Milky Way</p>
+            </div>
+            <div class="stat">
+                <h2>∞</h2>
+                <p>Possibilities</p>
+            </div>
+        </section>
+
+        <footer>✦ COSMOS EXPLORER — THE UNIVERSE AWAITS ✦</footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('stars');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const stars = Array.from({ length: 200 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 1.5,
+            alpha: Math.random(),
+            speed: Math.random() * 0.005
+        }));
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(s => {
+                s.alpha += s.speed;
+                if (s.alpha > 1 || s.alpha < 0) s.speed *= -1;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
